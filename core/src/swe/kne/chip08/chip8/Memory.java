@@ -7,29 +7,27 @@ public class Memory {
 
     public Memory() {
         resetMemory();
-        System.out.println("Memory started");
     }
 
     public void resetMemory() {
         memory = new byte[4096];
     }
-    public void loadRom(File rom, Short programCounter) {
+    public void loadRom(File rom, int programCounter) {
         byte[] b = LoadGame.loadRom(new File("roms/pong.rom"));
         int i = 0;
         for (byte bytet : b) {
             memory[programCounter + i] = bytet;
             i++;
         }
-        System.out.println("loaded");
     }
-    public Short getOpcode(Short programCounter) {
+    public Short getOpcode(int programCounter) {
+        // TODO: clean this up, maybe.
         byte first = (byte) Byte.toUnsignedInt(memory[programCounter]);
         byte second = (byte) Byte.toUnsignedInt(memory[programCounter + 1]);
         short output = (short) 0x00;
         output = (short) (first | output);
         output = (short) (output << 8);
         output = (short) (second | output);
-        //System.out.println(Integer.toHexString(Short.toUnsignedInt(output)));
         return output;
     }
 }

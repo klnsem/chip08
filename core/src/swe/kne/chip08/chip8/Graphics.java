@@ -5,7 +5,6 @@ public class Graphics {
 
     public Graphics() {
         resetGraphics();
-        System.out.println("Graphics started");
     }
 
     public void resetGraphics() {
