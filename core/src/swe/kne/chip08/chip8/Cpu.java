@@ -4,44 +4,57 @@ import java.io.File;
 
 public class Cpu {
     private byte[] gpRegisters = new byte[16];
-    private Short indexRegister;
+    private short indexRegister;
     private int programCounter;
-    private Character delayTimer;
-    private Character soundTimer;
-    private Short[] stack = new Short[16];
-    private Short stackPointer;
+    private byte delayTimer;
+    private byte soundTimer;
+    private short[] stack = new short[16];
+    private short stackPointer;
 
-    private Short currentInstruction;
+    private long currentInstruction;
     private Character[] pressedKey = new Character[16];
 
     private Graphics graphics = new Graphics();
     private Memory memory = new Memory();
 
+    private boolean running;
+
     public Cpu(File rom) {
         resetMachine();
         memory.loadRom(rom, programCounter);
-
+        while (running) {
+            tick();
+            debugLoggingOutput();
+        }
         // TODO: implement the complete cycle and the main loop.
         // TODO: set correct data and whatnot.
         //debugCpu();
     }
 
     public void tick() {
+
+        System.out.println("tick");
         fetch();
-        programCounter+=2;
+        programCounter = programCounter + 2;
         decodeAndExecute();
     }
 
     private void fetch() {
         try {
-            currentInstruction = memory.getOpcode(programCounter);
+            currentInstruction = (long) (memory.getInstruction(programCounter));
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
     private void decodeAndExecute() {
-        Decoder.decodeAndExecuteInstruction(currentInstruction, this);
+        try {
+            Decoder.decodeAndExecuteInstruction(currentInstruction, this);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            running = false;
+        }
     }
 
     public void resetMachine() {
@@ -49,10 +62,11 @@ public class Cpu {
         currentInstruction = 0;
         indexRegister = 0;
         stackPointer = 0;
-        stack = new Short[16];
+        stack = new short[16];
         gpRegisters = new byte[16];
         memory.resetMemory();
         graphics.resetGraphics();
+        running = true;
         // TODO: set these two to something correct
         delayTimer = 60;
         soundTimer = 60;
@@ -73,13 +87,13 @@ public class Cpu {
     public void setIndexRegister(Short indexRegister) {
         this.indexRegister = indexRegister;
     }
-    public void setDelayTimer(Character delayTimer) {
+    public void setDelayTimer(byte delayTimer) {
         this.delayTimer = delayTimer;
     }
-    public void setSoundTimer(Character soundTimer) {
+    public void setSoundTimer(byte soundTimer) {
         this.soundTimer = soundTimer;
     }
-    public void setStack(Short[] stack) {
+    public void setStack(short[] stack) {
         this.stack = stack;
     }
     public void setStackPointer(Short stackPointer) {
@@ -100,7 +114,7 @@ public class Cpu {
      * making and debugging the emulator.
      */
     public void debugLoggingOutput() {
-        System.out.print("\nCSO: "); // SO as in CPU STATUS OUTPUT
+        System.out.print("CSO: "); // CSO as in CPU STATUS OUTPUT
         int i = 0;
         for (byte b : gpRegisters) {
             System.out.print(Integer.toHexString(i) + "=" + Integer.toHexString(b) + " ");
@@ -111,7 +125,6 @@ public class Cpu {
         System.out.print(" DT: " + Integer.toHexString(delayTimer));
         System.out.print(" ST: " + Integer.toHexString(soundTimer));
         System.out.print(" SP: " + Integer.toHexString(stackPointer));
-        System.out.print(" CI: " + Integer.toHexString(currentInstruction));
-
+        System.out.print(" CI: " + currentInstruction + "\n");
     }
 }

@@ -1,7 +1,5 @@
 package swe.kne.chip08.desktop;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import swe.kne.chip08.chip08mainwindow;
