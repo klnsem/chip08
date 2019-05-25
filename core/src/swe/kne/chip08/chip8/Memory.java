@@ -13,7 +13,7 @@ public class Memory {
         memory = new byte[4096];
     }
     public void loadRom(File rom, int programCounter) {
-        byte[] b = LoadGame.loadRom(new File("roms/pong.rom"));
+        byte[] b = LoadGame.loadRom(rom);
         int i = 0;
         for (byte bytet : b) {
             memory[programCounter + i] = bytet;
@@ -21,7 +21,7 @@ public class Memory {
         }
     }
     public Short getOpcode(int programCounter) {
-        // TODO: clean this up, maybe.
+        // TODO: clean this mess up.
         byte first = (byte) Byte.toUnsignedInt(memory[programCounter]);
         byte second = (byte) Byte.toUnsignedInt(memory[programCounter + 1]);
         short output = (short) 0x00;

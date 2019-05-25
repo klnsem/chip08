@@ -1,22 +1,24 @@
 package swe.kne.chip08.chip8;
 
 public class Decoder {
-    /**
-     * TODO: implement carry-flags and whatnot.
-     */
 
     public static void decodeAndExecuteInstruction(short currentInstruction, Cpu cpu) throws IllegalArgumentException {
         String opCode = getOpcode(currentInstruction);
         switch (opCode) {
-            case ("6"):
+            case "6": {
                 /**
                  * 6XNN, SET vX to NN
                  */
                 cpu.setGpRegisters(((byte) ((currentInstruction & 0x0F00) >> 8)), ((byte) (currentInstruction & 0x00FF)));
                 break;
-            default:
+            }
+            case "7": {
+                break;
+            }
+            default: {
                 //TODO: also print what the currentInstruction looks like as hex, binary etc.
                 throw new IllegalArgumentException("WRONG OPCODE");
+            }
         }
     }
 

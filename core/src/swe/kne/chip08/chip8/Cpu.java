@@ -1,11 +1,12 @@
 package swe.kne.chip08.chip8;
 
+import java.io.File;
+
 public class Cpu {
-    private Byte[] gpRegisters = new Byte[16];
+    private byte[] gpRegisters = new byte[16];
     private Short indexRegister;
     private int programCounter;
     private Character delayTimer;
-
     private Character soundTimer;
     private Short[] stack = new Short[16];
     private Short stackPointer;
@@ -16,13 +17,17 @@ public class Cpu {
     private Graphics graphics = new Graphics();
     private Memory memory = new Memory();
 
-    public Cpu() {
+    public Cpu(File rom) {
         resetMachine();
+        memory.loadRom(rom, programCounter);
+
+        // TODO: implement the complete cycle and the main loop.
         // TODO: set correct data and whatnot.
         //debugCpu();
     }
 
     public void tick() {
+        //System.out.println(currentInstruction);
         fetch();
         programCounter+=2;
         decodeAndExecute();
@@ -30,7 +35,7 @@ public class Cpu {
 
     private void fetch() {
         try {
-            Decoder.decodeAndExecuteInstruction(currentInstruction, this);
+            currentInstruction = memory.getOpcode(programCounter);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -46,9 +51,12 @@ public class Cpu {
         indexRegister = 0;
         stackPointer = 0;
         stack = new Short[16];
-        gpRegisters = new Byte[16];
+        gpRegisters = new byte[16];
         memory.resetMemory();
         graphics.resetGraphics();
+        // TODO: set these two to something correct
+        delayTimer = 60;
+        soundTimer = 60;
     }
     public void setFontset() {
         ;
@@ -56,14 +64,9 @@ public class Cpu {
         // or maybe at 0x000??
     }
     public void debugCpu() {
-        /**
-         * this somewhat surprisingly gives you the correct opcode
-         */
-        memory.loadRom(null, programCounter);
-        Short hello = memory.getOpcode(programCounter);
+        debugLoggingOutput();
         tick();
-        //System.out.println(Integer.toHexString(hello));
-        //System.out.println(Integer.toHexString(hello >> 12));
+        debugLoggingOutput();
     }
     public void setGpRegisters(byte register, byte content) {
         this.gpRegisters[register] = content;
@@ -91,5 +94,21 @@ public class Cpu {
     }
     public void setMemory(Memory memory) {
         this.memory = memory;
+    }
+
+    public void debugLoggingOutput() {
+        System.out.print("\nCSO: "); // SO as in CPU STATUS OUTPUT
+        int i = 0;
+        for (byte b : gpRegisters) {
+            System.out.print(Integer.toHexString(i) + "=" + Integer.toHexString(b) + " ");
+            i++;
+        }
+        System.out.print(" IR: " + Integer.toHexString(indexRegister));
+        System.out.print(" PC: " + Integer.toHexString(programCounter));
+        System.out.print(" DT: " + Integer.toHexString(delayTimer));
+        System.out.print(" ST: " + Integer.toHexString(soundTimer));
+        System.out.print(" SP: " + Integer.toHexString(stackPointer));
+        System.out.print(" CI: " + Integer.toHexString(currentInstruction));
+
     }
 }
