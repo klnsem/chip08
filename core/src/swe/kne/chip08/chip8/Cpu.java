@@ -1,7 +1,7 @@
 package swe.kne.chip08.chip8;
 
 public class Cpu {
-    private Character[] gpRegisters = new Character[16];
+    private Byte[] gpRegisters = new Byte[16];
     private Short indexRegister;
     private int programCounter;
     private Character delayTimer;
@@ -12,7 +12,6 @@ public class Cpu {
 
     private Short currentInstruction;
     private Character[] pressedKey = new Character[16];
-    private Instruction decodedInstruction;
 
     private Graphics graphics = new Graphics();
     private Memory memory = new Memory();
@@ -47,7 +46,7 @@ public class Cpu {
         indexRegister = 0;
         stackPointer = 0;
         stack = new Short[16];
-        gpRegisters = new Character[16];
+        gpRegisters = new Byte[16];
         memory.resetMemory();
         graphics.resetGraphics();
     }
@@ -66,8 +65,8 @@ public class Cpu {
         //System.out.println(Integer.toHexString(hello));
         //System.out.println(Integer.toHexString(hello >> 12));
     }
-    public void setGpRegisters(Character[] gpRegisters) {
-        this.gpRegisters = gpRegisters;
+    public void setGpRegisters(byte register, byte content) {
+        this.gpRegisters[register] = content;
     }
     public void setIndexRegister(Short indexRegister) {
         this.indexRegister = indexRegister;
