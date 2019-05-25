@@ -27,7 +27,6 @@ public class Cpu {
     }
 
     public void tick() {
-        //System.out.println(currentInstruction);
         fetch();
         programCounter+=2;
         decodeAndExecute();
@@ -96,6 +95,10 @@ public class Cpu {
         this.memory = memory;
     }
 
+    /**
+     * this should be called every fetch-decode-execute-cycle - preferably at the end of it - while
+     * making and debugging the emulator.
+     */
     public void debugLoggingOutput() {
         System.out.print("\nCSO: "); // SO as in CPU STATUS OUTPUT
         int i = 0;
