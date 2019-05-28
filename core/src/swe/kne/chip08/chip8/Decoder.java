@@ -5,15 +5,13 @@ package swe.kne.chip08.chip8;
  */
 public class Decoder {
 
-    public static void decodeAndExecuteInstruction(long currentInstruction, Cpu cpu) throws IllegalArgumentException {
+    public static void decodeAndExecuteInstruction(long currentInstruction, Cpu cpu, Memory memory) throws IllegalArgumentException {
         String opCode = Integer.toHexString(getOpcode(currentInstruction));
         switch (opCode) {
             case "6": {
                 /**
                  * 6XNN, SET vX to NN
                  */
-                //System.out.println("getunsignedbyte: " + (byte) (getUnsignedByte(currentInstruction)));
-                //cpu.setGpRegisters(((byte) ((currentInstruction & 0x0F00) >> 8)), ((byte) (currentInstruction & 0x00FF)));
                 cpu.setGpRegisters(((byte) ((currentInstruction & 0x0F00) >> 8)), ((byte) (getUnsignedByte((currentInstruction & 0x00FF)))));
                 break;
             }
@@ -25,6 +23,24 @@ public class Decoder {
                  * ANNN, SET Index Register to NNN
                  */
                 cpu.setIndexRegister((short) (getUnsignedSlab( (currentInstruction & 0x0FFF))));
+                break;
+            }
+            case "d": {
+                /**
+                 * DXYN, DRAW sprite. Read n bytes from memory, starting from the memory location found in the index
+                 * register. Draw this at vX and vY (width & height--pos). The drawing is done via XORing, and if any pixel is
+                 * erased: set vF to collision (i.e. true). If sprite is positioned outside screen (so, if it's
+                 * negative or goes beyond the 64 * 32), it wraps around.
+                 */
+                short[] toDraw = new short[(getUnsignedNibble(currentInstruction & 0x0F))];
+                for (int i = 0; i < toDraw.length; i++) {
+                    toDraw[i] = (short) memory.getUnsignedByte(cpu.getIndexRegister() + i);
+                }
+
+                int x = cpu.getFromGpRegisters(getUnsignedNibble(currentInstruction & 0x0F00) >>> 8);
+                int y = cpu.getFromGpRegisters(getUnsignedNibble(currentInstruction & 0x00F0) >>> 4);
+
+                cpu.debugGraphics(toDraw, x, y);
                 break;
             }
             case "f": {
@@ -56,15 +72,18 @@ public class Decoder {
         }
     }
 
+    // 4 bitar
     public static int getUnsignedNibble(long instruction) {
         int i = (int) (instruction);
         if (i < 0) {
             return (int) (i & 0x0000000F);
         }
         else {
-            return (int) (i >>> 12);
+            return i;
         }
     }
+
+    // 8 bitar
     public static int getUnsignedByte(long instruction) {
         int i = (int) (instruction);
         if (i < 0) {
@@ -74,8 +93,9 @@ public class Decoder {
             return i;
         }
     }
+
+    // 12 bitar
     public static int getUnsignedSlab(long i) {
-        System.out.println("GUS = " + i);
         if (i < 0) {
             return (int) i & 0x00000FFF;
         }

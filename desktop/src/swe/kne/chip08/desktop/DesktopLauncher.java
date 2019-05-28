@@ -11,6 +11,8 @@ import swe.kne.chip08.chip08mainwindow;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+		config.setTitle("chip 0 8");
+		config.setWindowedMode(512, 256); // original resolution: 64 x 32, in this case, it's * 8.
 		new Lwjgl3Application(new chip08mainwindow(), config);
 	}
 }

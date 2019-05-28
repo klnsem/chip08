@@ -22,10 +22,20 @@ public class Memory {
     }
     public long getInstruction(int programCounter) {
         // TODO: clean this mess up.
-        short ett = (short) (memory[programCounter] & 0xFF);
-        short tva = (short) ((memory[programCounter + 1]) & 0xFF);
-        int hela = (ett << 8);
-        hela = hela | tva;
-        return hela;
+        short firstHalf = (short) (memory[programCounter] & 0xFF);
+        short secondHalf = (short) ((memory[programCounter + 1]) & 0xFF);
+        int whole = (firstHalf << 8);
+        whole = whole | secondHalf;
+        return whole;
+    }
+
+    public int getUnsignedByte(int location) {
+        byte b = (byte) memory[location];
+        if (b < 0) {
+            return (int) (b & 0x000000FF); //TODO: testa om det går att ta bort castingen.
+        }
+        else {
+            return b;
+        }
     }
 }
