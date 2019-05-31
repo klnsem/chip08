@@ -6,59 +6,51 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import swe.kne.chip08.chip8.Cpu;
-import swe.kne.chip08.chip8.DebugSprite;
+import swe.kne.chip08.chip8.*;
 
 import java.io.File;
 
 public class chip08mainwindow extends ApplicationAdapter {
 
+	private Messages messages;
 	private Cpu cpu;
+	private Memory memory;
+	private Graphics graphics;
 	private OrthographicCamera camera;
 	ShapeRenderer sr;
-	public static final int resolutionMultiplicity = 8; // so, turn 64 * 32 into 512 * 256
+	public static final int resMulti = 8; // so, turn 64 * 32 into 512 * 256
 
-	
 	@Override
 	public void create () {
-		cpu = new Cpu(new File("roms/pong.rom"));
+		messages = new Messages();
+		cpu = new Cpu(messages);
 		//cpu = new Cpu(new File("roms/test_opcode.ch8"));
+		memory = new Memory(messages);
+		graphics = new Graphics(messages);
+		messages.addComponents(cpu, graphics, memory);
+		cpu.resetMachine();
+		messages.memoryLoadRom(new File("roms/pong.rom"), cpu.getProgramCounter());
+
+
 		camera = new OrthographicCamera();
-		camera.setToOrtho(true, (64 * resolutionMultiplicity), (32 * resolutionMultiplicity));
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
+		camera.setToOrtho(true, 64 * resMulti, 32 * resMulti); //Y is down, 0 at top etc.
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // clears screen
 		sr = new ShapeRenderer();
 	}
 
 	@Override
 	public void render () {
 		super.render();
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // This cryptic line clears the screen.
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); // clears screen
 
 		while (cpu.getRunning()) {
 			cpu.tick();
 			cpu.debugLoggingOutput();
-			if (cpu.checkIfRenderScreen && cpu.renderWholeScreen) {
-				// hela skärmem måste ritas om
-				;
-			}
-			else if (cpu.checkIfRenderScreen) {
-				// rendera bara en sprite
-				//Sprite spr = cpu.getLatestSprite();
-			}
-			else {
-				// gör nada, kan nog tas bort.
-				;
-			}
-
-			for (DebugSprite ds : cpu.dsal) {
-				debugDrawCustomSprite(ds.pixels, ds.x, ds.y);
+			if (graphics.wantRenderScreen()) {
+				drawFullScreen();
 			}
 		}
-
-		// This is used to keep the sprites on screen after the emulator has "crashed".
-		for (DebugSprite ds : cpu.dsal) {
-			debugDrawCustomSprite(ds.pixels, ds.x, ds.y);
-		}
+		drawFullScreen();
 	}
 	
 	@Override
@@ -66,29 +58,23 @@ public class chip08mainwindow extends ApplicationAdapter {
 		;
 	}
 
-	public void debugDrawCustomSprite(char[] pixels, int x, int y) {
-		camera.update();
 
+	public void drawFullScreen() {
+		camera.update();
 		sr.setProjectionMatrix(camera.combined);
-		int height = (pixels.length / 8);
 
 		sr.begin(ShapeRenderer.ShapeType.Filled);
+		boolean[] pixels = graphics.getAllPixels();
 
-		for (int iRow = 0; iRow < (height - 1); iRow++) {
-			for (int iCol = 0; iCol < 8; iCol++) {
-				int currentPos = ((iRow * 8) + (iCol));
-				if (pixels[currentPos] == '1') {
+		for (int height = 0; height < 32; height++) {
+			for (int width = 0; width < 64; width++) {
+				int currentPos = height * 64 + width;
+				if (pixels[currentPos]) {
 					sr.setColor(Color.WHITE);
-					sr.rect(((iCol + x) * 8), ((iRow + y) * 8), 8, 8);
-				}
-				else if (pixels[currentPos] == '0') {
-					sr.setColor(Color.BLACK);
-					sr.rect(((iCol + x) * 8), ((iRow + y) * 8), 8, 8);
+					sr.rect((width * resMulti), (height * resMulti), resMulti, resMulti);
 				}
 			}
-
 		}
 		sr.end();
-		cpu.debugDraw = false;
 	}
 }
