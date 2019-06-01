@@ -92,6 +92,31 @@ public class Cpu {
     public void setStack(short[] stack) {
         this.stack = stack;
     }
+    public void pushStack(short newValue) {
+        short[] newStack = new short[stack.length];
+        for (int i = 1; i < stack.length; i++) {
+            newStack[i] = stack[i - 1];
+        }
+        newStack[0] = newValue;
+        for (int i = 0; i < newStack.length; i++) {
+        }
+        stack = newStack;
+    }
+    public short popStack() throws IndexOutOfBoundsException {
+        short[] newStack = new short[stack.length];
+        short toPop = stack[0];
+        for (int i = 15; i > 0; i--) {
+            newStack[i - 1] = stack[i];
+        }
+        stack = newStack;
+        if (toPop != 0) {
+            return toPop;
+        }
+        else {
+            throw new IndexOutOfBoundsException("ERROR: tried to pop from an empty stack");
+        }
+    }
+
     public void setStackPointer(Short stackPointer) {
         this.stackPointer = stackPointer;
     }
@@ -110,6 +135,9 @@ public class Cpu {
     }
     public int getProgramCounter() {
         return programCounter;
+    }
+    public void setProgramCounter(int i) {
+        programCounter = i;
     }
     /**
      * this should be called every fetch-decode-execute-cycle - preferably at the end of it - while

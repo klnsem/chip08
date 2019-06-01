@@ -2,6 +2,12 @@ package swe.kne.chip08.chip8;
 
 
 public class Graphics {
+
+    /**
+     * TODO: Implement screen-wraparound, i.e. instruction d: if something tries
+     * to print outside of the screens 64 * 32, it wraps around and writes at the top and/or left instead.
+     */
+
     private boolean[] pixels = new boolean[64 * 32];
     private boolean wantRenderScreen = false;
 
@@ -19,6 +25,11 @@ public class Graphics {
         return this.pixels;
     }
 
+    /**
+     *
+     * @param pos top left corner of the sprite
+     * @param sprite an y * 8 large boolean-array.
+     */
     public void xorSprite(int pos, boolean[] sprite) {
         int row = newgetRow(pos);
         int column = newgetColumn(pos);

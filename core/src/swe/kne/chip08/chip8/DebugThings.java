@@ -30,4 +30,14 @@ public class DebugThings {
             System.out.println();
         }
     }
+
+    public static void testStackPush(Cpu cpu) {
+        cpu.pushStack((short) 0x0F0F);
+        cpu.pushStack((short) 0x0FF8);
+        cpu.pushStack((short) 0x0AE1);
+        cpu.pushStack((short) 0x00CD);
+    }
+    public static void testStackPop(Cpu cpu) {
+        System.out.println(cpu.popStack());
+    }
 }

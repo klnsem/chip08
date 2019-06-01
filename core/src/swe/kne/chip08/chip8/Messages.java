@@ -7,9 +7,12 @@ import java.io.File;
  */
 public class Messages {
 
-    private Cpu cpu;
-    private Graphics graphics;
-    private Memory memory;
+    /**
+     * TODO: these are public for debug purposes.
+     */
+    public Cpu cpu;
+    public Graphics graphics;
+    public Memory memory;
 
     public Messages() {
         ;
@@ -63,6 +66,18 @@ public class Messages {
     }
     public void cpuResetCarryFlag() {
         cpu.resetCarryFlag();
+    }
+    public void cpuPushStack(short s) {
+        cpu.pushStack(s);
+    }
+    public short cpuPopStack() {
+        return cpu.popStack();
+    }
+    public int cpuGetProgramCounter() {
+        return cpu.getProgramCounter();
+    }
+    public void cpuSetProgramCounter(int i) {
+        cpu.setProgramCounter(i);
     }
 
     /**

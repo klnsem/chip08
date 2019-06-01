@@ -9,17 +9,22 @@ public class Decoder {
         String opCode = Integer.toHexString(BinConv.getOpcode(curInstr));
         switch (opCode) {
             /**
+             * 2NNN, pushes the next instruction on the program counter to the stack, sets the program counter
+             * to NNN, and continues its merry way in a subroutine. When the subroutine is finished with a 0x00EE
+             * instruction, it pops the stack and sets the program counter to that value.
+             */
+            case "2": {
+                messages.cpuPushStack((short) messages.cpuGetProgramCounter());
+                messages.cpuSetProgramCounter(BinConv.getUnsignedSlab(curInstr & 0x0FFF));
+                break;
+            }
+
+            /**
              * 6XNN, SET vX to NN
              */
             case "6": {
                 messages.cpuSetGpRegisters((byte) BinConv.getUnsignedNibble((int) curInstr & 0x0F00),
                         ((byte) BinConv.getUnsignedByte(curInstr & 0x00FF)));
-                break;
-            }
-            /**
-             * TODO: implement
-             */
-            case "7": {
                 break;
             }
             /**
@@ -57,11 +62,6 @@ public class Decoder {
 
                 break;
             }
-
-            case "f": {
-                break;
-            }
-
             default: {
                 System.out.println("something went wrong: ");
                 System.out.println("opcode: " + opCode);
