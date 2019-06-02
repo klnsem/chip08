@@ -45,6 +45,12 @@ public class Messages {
     public short memoryGetByte(int location) {
         return (short) memory.getByte(location);
     }
+    public void memorySetByte(int location, int content) {
+        memory.setByte(location, content);
+    }
+    public Memory memoryGetFullMemoryObj() {
+        return memory.getFullMemoryObj();
+    }
 
     /**
      * CPU

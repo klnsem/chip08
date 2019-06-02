@@ -41,4 +41,10 @@ public class Memory {
             return i;
         }
     }
+    public void setByte(int location, int content) {
+        memory[location] = content;
+    }
+    public Memory getFullMemoryObj() {
+        return this;
+    }
 }

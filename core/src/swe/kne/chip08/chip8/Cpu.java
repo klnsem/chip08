@@ -2,7 +2,7 @@ package swe.kne.chip08.chip8;
 
 
 public class Cpu {
-    private byte[] gpRegisters = new byte[16];
+    private short[] gpRegisters = new short[16];
     private short indexRegister;
     private int programCounter;
     private byte delayTimer;
@@ -38,7 +38,7 @@ public class Cpu {
     }
     private void decodeAndExecute() {
         try {
-            Decoder.decodeAndExecuteInstruction(currentInstruction, this, messages);
+            Decoder.decodeAndExecuteInstruction(currentInstruction, messages);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -52,7 +52,7 @@ public class Cpu {
         indexRegister = 0;
         stackPointer = 0;
         stack = new short[16];
-        gpRegisters = new byte[16];
+        gpRegisters = new short[16];
         messages.memoryReset();
         messages.graphicsReset();
         running = true;
@@ -74,7 +74,7 @@ public class Cpu {
     public void setGpRegisters(byte register, byte content) {
         this.gpRegisters[register] = content;
     }
-    public byte getFromGpRegisters(int pos) {
+    public short getFromGpRegisters(int pos) {
         return this.gpRegisters[pos];
     }
     public void setIndexRegister(Short indexRegister) {
@@ -146,7 +146,7 @@ public class Cpu {
     public void debugLoggingOutput() {
         System.out.print("CSO: "); // CSO as in CPU STATUS OUTPUT
         int i = 0;
-        for (byte b : gpRegisters) {
+        for (short b : gpRegisters) {
             System.out.print(Integer.toHexString(i) + "=" + Integer.toHexString(b) + " ");
             i++;
         }

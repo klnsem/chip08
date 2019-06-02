@@ -40,4 +40,12 @@ public class DebugThings {
     public static void testStackPop(Cpu cpu) {
         System.out.println(cpu.popStack());
     }
+
+    public static void debugFX33(Memory memory, int ir) {
+
+        System.out.println(Integer.toUnsignedString(memory.getByte(ir)));
+        System.out.println(Integer.toUnsignedString(memory.getByte(ir + 1)));
+        System.out.println(Integer.toUnsignedString(memory.getByte(ir + 2)));
+
+    }
 }
