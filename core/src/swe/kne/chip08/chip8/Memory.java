@@ -23,6 +23,11 @@ public class Memory {
             i++;
         }
     }
+    public void loadFont(int memoryStart) {
+        for (int i = 0; i < SpriteFont.all.length; i++) {
+            memory[memoryStart + i] = (int) SpriteFont.all[i];
+        }
+    }
     public long getInstruction(int programCounter) {
         // TODO: clean this mess up.
         short firstHalf = (short) (memory[programCounter] & 0xFF);

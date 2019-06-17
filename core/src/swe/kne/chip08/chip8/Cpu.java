@@ -71,7 +71,7 @@ public class Cpu {
     public void debugCpu() {
         ;
     }
-    public void setGpRegisters(byte register, byte content) {
+    public void setGpRegisters(byte register, short content) {
         this.gpRegisters[register] = content;
     }
     public short getFromGpRegisters(int pos) {
@@ -155,6 +155,7 @@ public class Cpu {
         System.out.print(" DT: " + Integer.toHexString(delayTimer));
         System.out.print(" ST: " + Integer.toHexString(soundTimer));
         System.out.print(" SP: " + Integer.toHexString(stackPointer));
-        System.out.print(" CI: " + currentInstruction + "\n");
+        System.out.print(" STK[0]: " + Integer.toHexString(stack[0]));
+        System.out.print(" CI: " + Integer.toHexString((int)currentInstruction) + "\n");
     }
 }

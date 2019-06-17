@@ -30,6 +30,7 @@ public class chip08mainwindow extends ApplicationAdapter {
 		messages.addComponents(cpu, graphics, memory);
 		cpu.resetMachine();
 		messages.memoryLoadRom(new File("roms/pong.rom"), cpu.getProgramCounter());
+		memory.loadFont(0x00);
 
 
 		camera = new OrthographicCamera();

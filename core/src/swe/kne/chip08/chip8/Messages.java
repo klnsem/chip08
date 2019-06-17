@@ -55,7 +55,7 @@ public class Messages {
     /**
      * CPU
      */
-    public void cpuSetGpRegisters(byte register, byte content) {
+    public void cpuSetGpRegisters(byte register, short content) {
         cpu.setGpRegisters(register, content);
     }
     public short cpuGetFromGpRegisters(int pos) {
@@ -84,6 +84,9 @@ public class Messages {
     }
     public void cpuSetProgramCounter(int i) {
         cpu.setProgramCounter(i);
+    }
+    public void cpuSetDelayTimer(byte dt) {
+        cpu.setDelayTimer(dt);
     }
 
     /**
